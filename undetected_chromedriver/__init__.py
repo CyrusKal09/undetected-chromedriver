@@ -35,7 +35,9 @@ TARGET_VERSION = 0
 
 
 class Chrome:
-    def __new__(cls, *args, enable_console_log=False, **kwargs):
+    __doc__ = _Chrome.__doc__
+
+    def __new__(cls, *args, **kwargs):
 
         if not ChromeDriverManager.installed:
             ChromeDriverManager(*args, **kwargs).install()
@@ -71,11 +73,7 @@ class Chrome:
                                 })
                             });
                         """
-                        + (
-                            "console.log = console.dir = console.error = function(){};"
-                            if not enable_console_log
-                            else ""
-                        )
+                       
                     },
                 )
             return instance._orig_get(*args, **kwargs)
@@ -94,6 +92,7 @@ class Chrome:
 
 
 class ChromeOptions:
+    __doc__ = _ChromeOptions.__doc__
     def __new__(cls, *args, **kwargs):
         if not ChromeDriverManager.installed:
             ChromeDriverManager(*args, **kwargs).install()
@@ -160,7 +159,7 @@ class ChromeDriverManager(object):
 
         selenium.webdriver.Chrome = Chrome
         selenium.webdriver.ChromeOptions = ChromeOptions
-        logger.warning("Selenium patched. Safe to import Chrome / ChromeOptions")
+        logger.info("Selenium patched. Safe to import Chrome / ChromeOptions")
         self_.__class__.selenium_patched = True
 
     def install(self, patch_selenium=True):
